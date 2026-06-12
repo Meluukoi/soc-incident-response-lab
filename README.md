@@ -35,24 +35,22 @@ The objective is to analyze security alerts, investigate suspicious activity, re
 
 ### Incident 1: Suspicious PowerShell Activity
 
-**Status:** In Progress
+**Status:** Completed
 
 ### Incident 2: Authentication Investigation
 
-**Status:** Planned
+**Status:** Completed
 
 ### Incident 3: Unauthorized Account Creation
 
-**Status:** Planned
-
+**Status:** Completed
 ### Incident 4: Privileged Group Membership Change
 
-**Status:** Planned
+**Status:** Completed
 
 ### Incident 5: Account Deletion Activity
 
-**Status:** Planned
-
+**Status:** Completed
 ---
 
 ## Investigation Methodology
