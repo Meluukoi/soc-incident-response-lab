@@ -391,3 +391,109 @@ Windows Security Event ID 4720 showing the creation of a new local user account 
 ![Account Creation Investigation](screenshots/new-user-account-creation.png)
 
 
+# Incident 4: Privileged Group Membership Change Investigation
+
+## Alert
+
+A user account was added to a privileged local security group.
+
+Changes to privileged group membership may indicate legitimate administrative activity or an attempt to escalate privileges on a system.
+
+---
+
+## Investigation Objective
+
+Determine which account was added to the privileged group, identify the user responsible for the change, and assess the security impact of the modification.
+
+---
+
+## Alert Query
+
+```spl
+source="WinEventLog:Security"
+EventCode=4732
+```
+
+---
+
+## Investigation
+
+Security group membership modification events were successfully collected and analyzed using Windows Security Event ID 4732.
+
+The investigation identified:
+
+- User accounts added to privileged groups
+- Group names and associated permissions
+- Security identifiers (SIDs)
+- Account modification activity
+- User responsible for the change
+
+Analysis of Event ID 4732 telemetry provided visibility into privilege modification activity occurring on the endpoint.
+
+The investigation confirmed that the account `labuser` was added to the local `Administrators` group.
+
+---
+
+## Timeline Reconstruction
+
+| Time | Activity |
+|--------|--------|
+| T0 | Group membership modification initiated |
+| T1 | User account added to Administrators group |
+| T2 | Windows generated Event ID 4732 |
+| T3 | Event indexed into Splunk |
+
+---
+
+## Findings
+
+The investigation confirmed that the account `labuser` was added to the local `Administrators` group.
+
+Analysis revealed:
+
+- Account Added: labuser
+- Group Name: Administrators
+- Event ID: 4732
+- Audit Result: Success
+- User Performing Action: milad
+
+The activity demonstrates how Windows records privileged group membership changes and provides visibility into privilege escalation opportunities.
+
+---
+
+## Impact Assessment
+
+- User account received administrative privileges
+- Increased access to system resources
+- Potential privilege escalation vector if unauthorized
+
+Risk Level: High
+
+Privileged group membership changes should be reviewed to ensure authorization and legitimacy.
+
+---
+
+## MITRE ATT&CK Mapping
+
+| Technique | ID |
+|------------|------------|
+| Account Manipulation | T1098 |
+
+---
+
+## Recommendations
+
+- Monitor privileged group membership changes.
+- Validate authorization for administrative privilege assignments.
+- Review newly privileged accounts.
+- Correlate privilege changes with account creation and authentication activity.
+
+---
+
+## Screenshots
+
+### Privileged Group Membership Investigation
+
+Windows Security Event ID 4732 showing a user account being added to the local Administrators group and associated audit details.
+
+![Privileged Group Membership Investigation](screenshots/security-group-membership-change.png)
