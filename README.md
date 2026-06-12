@@ -281,3 +281,113 @@ Repeated failed logons may indicate password spraying or brute-force activity an
 Windows Security Event ID 4625 showing failed authentication activity, logon details, and failure information collected through Splunk.
 
 ![Failed Authentication Investigation](screenshots/failed-logon-investigation.png)
+
+
+# Incident 3: Unauthorized Account Creation Investigation
+
+## Alert
+
+A new local user account was created on the endpoint.
+
+Account creation activity may indicate legitimate administrative actions or unauthorized persistence mechanisms established by an attacker.
+
+---
+
+## Investigation Objective
+
+Determine which account was created, identify the user responsible for the action, and assess whether the account creation activity represents legitimate administration or potential malicious behavior.
+
+---
+
+## Alert Query
+
+```spl
+source="WinEventLog:Security"
+EventCode=4720
+```
+
+---
+
+## Investigation
+
+User account creation events were successfully collected and analyzed using Windows Security Event ID 4720.
+
+The investigation identified:
+
+- Newly created user accounts
+- User responsible for account creation
+- Security identifiers (SIDs)
+- Account creation timestamps
+- System information
+
+Analysis of Event ID 4720 telemetry provided visibility into account lifecycle activity occurring on the endpoint.
+
+The investigation confirmed that a new local account named `labuser` was created.
+
+---
+
+## Timeline Reconstruction
+
+| Time | Activity |
+|--------|--------|
+| T0 | Account creation initiated |
+| T1 | New local user account created |
+| T2 | Windows generated Event ID 4720 |
+| T3 | Event indexed into Splunk |
+
+---
+
+## Findings
+
+The investigation confirmed the creation of the local account `labuser`.
+
+Analysis revealed:
+
+- Account Name: labuser
+- Event ID: 4720
+- Audit Result: Success
+- User Performing Action: milad
+
+The activity demonstrates how Windows records account creation events and provides visibility into administrative account management actions.
+
+---
+
+## Impact Assessment
+
+- New local account successfully created
+- Potential persistence mechanism if unauthorized
+- No evidence of privilege escalation observed during this investigation
+
+Risk Level: Medium
+
+Account creation activity should always be reviewed to ensure authorization and legitimacy.
+
+---
+
+## MITRE ATT&CK Mapping
+
+| Technique | ID |
+|------------|------------|
+| Create Account | T1136 |
+| Local Account | T1136.001 |
+
+---
+
+## Recommendations
+
+- Monitor user account creation activity.
+- Investigate newly created accounts.
+- Validate account ownership and authorization.
+- Correlate account creation activity with privilege changes and authentication events.
+
+---
+
+## Screenshots
+
+### Account Creation Investigation
+
+Windows Security Event ID 4720 showing the creation of a new local user account and associated audit details.
+
+![Account Creation Investigation](screenshots/new-user-account-creation.png)
+
+
