@@ -497,3 +497,111 @@ Privileged group membership changes should be reviewed to ensure authorization a
 Windows Security Event ID 4732 showing a user account being added to the local Administrators group and associated audit details.
 
 ![Privileged Group Membership Investigation](screenshots/security-group-membership-change.png)
+
+
+# Incident 5: Account Deletion Investigation
+
+## Alert
+
+A local user account was deleted from the endpoint.
+
+Account deletion activity may represent legitimate administrative actions or an attempt to remove evidence of prior account usage.
+
+---
+
+## Investigation Objective
+
+Determine which account was deleted, identify the user responsible for the action, and assess whether the deletion activity represents legitimate administration or potential malicious behavior.
+
+---
+
+## Alert Query
+
+```spl
+source="WinEventLog:Security"
+EventCode=4726
+```
+
+---
+
+## Investigation
+
+User account deletion events were successfully collected and analyzed using Windows Security Event ID 4726.
+
+The investigation identified:
+
+- Deleted user accounts
+- User responsible for the deletion
+- Security identifiers (SIDs)
+- Account lifecycle activity
+- Associated system information
+
+Analysis of Event ID 4726 telemetry provided visibility into account removal activity occurring on the endpoint.
+
+The investigation confirmed that the account `labuser` was deleted from the local system.
+
+---
+
+## Timeline Reconstruction
+
+| Time | Activity |
+|--------|--------|
+| T0 | Account deletion initiated |
+| T1 | User account removed |
+| T2 | Windows generated Event ID 4726 |
+| T3 | Event indexed into Splunk |
+
+---
+
+## Findings
+
+The investigation confirmed the deletion of the local account `labuser`.
+
+Analysis revealed:
+
+- Deleted Account: labuser
+- Event ID: 4726
+- Audit Result: Success
+- User Performing Action: milad
+
+The activity demonstrates how Windows records account deletion events and provides visibility into account lifecycle management.
+
+---
+
+## Impact Assessment
+
+- User account successfully removed
+- Access associated with the account revoked
+- No evidence of malicious activity identified during the investigation
+
+Risk Level: Medium
+
+Account deletion activity should be reviewed to ensure authorization and legitimacy.
+
+---
+
+## MITRE ATT&CK Mapping
+
+| Technique | ID |
+|------------|------------|
+| Create Account | T1136 |
+| Local Account | T1136.001 |
+
+---
+
+## Recommendations
+
+- Monitor account deletion activity.
+- Validate authorization for account removal actions.
+- Review account lifecycle events for unusual patterns.
+- Correlate account deletions with account creation and privilege modification activity.
+
+---
+
+## Screenshots
+
+### Account Deletion Investigation
+
+Windows Security Event ID 4726 showing the deletion of a local user account and associated audit details.
+
+![Account Deletion Investigation](screenshots/account-deletion-investigation.png)
