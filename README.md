@@ -174,3 +174,110 @@ Risk Level: Low
 PowerShell spawning whoami.exe identified through Sysmon Event ID 1 process creation telemetry.
 
 ![PowerShell Investigation](screenshots/powershell-whoami-investigation.png)
+
+
+# Incident 2: Failed Authentication Investigation
+
+## Alert
+
+Multiple failed authentication attempts were identified through Windows Security Event ID 4625.
+
+Failed logon activity can indicate password guessing, brute-force attempts, misconfigured services, or unauthorized access attempts.
+
+---
+
+## Investigation Objective
+
+Determine the source of the failed authentication attempts, identify the targeted account, analyze the logon type, and assess whether the activity indicates malicious behavior.
+
+---
+
+## Alert Query
+
+```spl
+source="WinEventLog:Security"
+EventCode=4625
+```
+
+---
+
+## Investigation
+
+Failed authentication events were successfully collected and analyzed using Windows Security Event ID 4625.
+
+The investigation identified:
+
+- Targeted user accounts
+- Logon types
+- Authentication packages
+- Failure reasons
+- Source workstation information
+- Associated status codes
+
+Analysis of Event ID 4625 telemetry provided visibility into unsuccessful authentication activity occurring on the endpoint.
+
+---
+
+## Timeline Reconstruction
+
+| Time | Activity |
+|--------|--------|
+| T0 | Authentication request initiated |
+| T1 | Windows rejected authentication request |
+| T2 | Event ID 4625 generated |
+| T3 | Failed logon recorded in Splunk |
+
+---
+
+## Findings
+
+The investigation identified failed authentication attempts against local user accounts.
+
+Analysis revealed:
+
+- Failed user authentication
+- Audit Failure events
+- Logon Type information
+- Failure status codes
+
+The activity demonstrates how Windows records unsuccessful authentication attempts and provides valuable context for identifying password attacks and unauthorized access attempts.
+
+---
+
+## Impact Assessment
+
+- No successful authentication observed
+- No privilege escalation observed
+- No persistence observed
+
+Risk Level: Medium
+
+Repeated failed logons may indicate password spraying or brute-force activity and should be monitored for escalation.
+
+---
+
+## MITRE ATT&CK Mapping
+
+| Technique | ID |
+|------------|------------|
+| Brute Force | T1110 |
+
+---
+
+## Recommendations
+
+- Monitor for repeated failed authentication attempts.
+- Investigate accounts experiencing excessive failures.
+- Review source workstation information.
+- Correlate failed logons with successful logon events.
+- Implement account lockout policies where appropriate.
+
+---
+
+## Screenshots
+
+### Failed Authentication Investigation
+
+Windows Security Event ID 4625 showing failed authentication activity, logon details, and failure information collected through Splunk.
+
+![Failed Authentication Investigation](screenshots/failed-logon-investigation.png)
