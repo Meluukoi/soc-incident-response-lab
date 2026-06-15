@@ -696,3 +696,99 @@ The dashboard can assist analysts in identifying abnormal authentication behavio
 Authentication monitoring dashboard displaying successful logons, failed logons, account activity, and top authenticated accounts.
 
 ![Authentication Monitoring Dashboard](screenshots/authentication-monitoring-dashboard.png)
+
+
+
+# Dashboard 2: Process Activity Monitoring
+
+## Objective
+
+Monitor process creation activity using Sysmon Event ID 1 to identify process execution trends, PowerShell usage, administrative command execution, and frequently executed processes.
+
+---
+
+## Data Sources
+
+- Microsoft-Windows-Sysmon/Operational
+- Sysmon Event ID 1 (Process Creation)
+
+---
+
+## Dashboard Components
+
+### Process Executions Over Time
+
+Displays Sysmon process creation activity over time.
+
+**Search:**
+
+```spl
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
+"<EventID>1</EventID>"
+| timechart count
+```
+
+### Top Executed Processes
+
+Displays the most frequently executed processes observed in Sysmon process creation events.
+
+**Search:**
+
+```spl
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
+"<EventID>1</EventID>"
+| rex field=_raw "Name='Image'>(?<Image>[^<]+)"
+| top Image
+```
+
+### PowerShell Activity Over Time
+
+Displays PowerShell execution activity observed through Sysmon process creation events.
+
+**Search:**
+
+```spl
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
+"<EventID>1</EventID>"
+powershell.exe
+| timechart count
+```
+
+### Administrative Command Activity
+
+Displays execution activity for common administrative and command-line tools.
+
+**Search:**
+
+```spl
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
+"<EventID>1</EventID>"
+(whoami.exe OR powershell.exe OR cmd.exe)
+| stats count by host
+```
+
+---
+
+## Findings
+
+The dashboard provides visibility into:
+
+- Process creation activity
+- Frequently executed processes
+- PowerShell execution trends
+- Administrative command usage
+- Endpoint process behavior
+
+The dashboard can assist analysts in identifying suspicious process execution, PowerShell abuse, command-line activity, and unusual endpoint behavior during investigations and threat hunting activities.
+
+---
+
+## Screenshots
+
+### Process Activity Monitoring Dashboard
+
+Process activity monitoring dashboard displaying process creation activity, top executed processes, PowerShell activity, and administrative command execution.
+
+![Process Activity Monitoring Dashboard](screenshots/process-activity-monitoring-dashboard.png)
+
+
