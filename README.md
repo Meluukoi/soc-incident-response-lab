@@ -603,3 +603,96 @@ Account deletion activity should be reviewed to ensure authorization and legitim
 Windows Security Event ID 4726 showing the deletion of a local user account and associated audit details.
 
 ![Account Deletion Investigation](screenshots/account-deletion-investigation.png)
+
+
+
+# Dashboard 1: Authentication Monitoring
+
+## Objective
+
+Monitor successful and failed authentication activity using Windows Security Event Logs to identify authentication trends, failed login attempts, and account usage patterns.
+
+---
+
+## Data Sources
+
+- Windows Security Logs
+- Event ID 4624 (Successful Logon)
+- Event ID 4625 (Failed Logon)
+
+---
+
+## Dashboard Components
+
+### Successful Logons Over Time
+
+Displays successful authentication activity using Windows Security Event ID 4624.
+
+**Search:**
+
+```spl
+source="WinEventLog:Security"
+EventCode=4624
+| timechart count
+```
+
+### Failed Logons Over Time
+
+Displays failed authentication attempts using Windows Security Event ID 4625.
+
+**Search:**
+
+```spl
+source="WinEventLog:Security"
+EventCode=4625
+| timechart count
+```
+
+### Authentication Activity by Account
+
+Displays authentication activity grouped by user account.
+
+**Search:**
+
+```spl
+source="WinEventLog:Security"
+(EventCode=4624 OR EventCode=4625)
+| stats count by Account_Name
+| sort - count
+```
+
+### Top Authenticated Accounts
+
+Displays the most frequently observed accounts involved in authentication events.
+
+**Search:**
+
+```spl
+source="WinEventLog:Security"
+(EventCode=4624 OR EventCode=4625)
+| top Account_Name
+```
+
+---
+
+## Findings
+
+The dashboard provides visibility into:
+
+- Successful authentication activity
+- Failed authentication attempts
+- Frequently used accounts
+- Authentication trends over time
+- User account activity patterns
+
+The dashboard can assist analysts in identifying abnormal authentication behavior, brute-force attempts, unauthorized account usage, and suspicious login activity.
+
+---
+
+## Screenshots
+
+### Authentication Monitoring Dashboard
+
+Authentication monitoring dashboard displaying successful logons, failed logons, account activity, and top authenticated accounts.
+
+![Authentication Monitoring Dashboard](screenshots/authentication-monitoring-dashboard.png)
