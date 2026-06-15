@@ -792,3 +792,103 @@ Process activity monitoring dashboard displaying process creation activity, top 
 ![Process Activity Monitoring Dashboard](screenshots/process-activity-monitoring-dashboard.png)
 
 
+# Dashboard 3: Network Activity Monitoring
+
+## Objective
+
+Monitor network connection activity using Sysmon Event ID 3 to identify communication patterns, frequently contacted destinations, commonly used ports, and processes generating network traffic.
+
+---
+
+## Data Sources
+
+- Microsoft-Windows-Sysmon/Operational
+- Sysmon Event ID 3 (Network Connection)
+
+---
+
+## Dashboard Components
+
+### Network Connections Over Time
+
+Displays Sysmon network connection activity over time.
+
+**Search:**
+
+```spl
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
+"<EventID>3</EventID>"
+| timechart count
+```
+
+### Top Destination IP Addresses
+
+Displays the most frequently contacted destination IP addresses observed in Sysmon Event ID 3 network connection events.
+
+**Search:**
+
+```spl
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
+"<EventID>3</EventID>"
+| rex field=_raw "Name='DestinationIp'>(?<DestinationIp>[^<]+)"
+| top DestinationIp
+```
+
+### Top Destination Ports
+
+Displays the most frequently observed destination ports in Sysmon Event ID 3 network connection events.
+
+**Search:**
+
+```spl
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
+"<EventID>3</EventID>"
+| rex field=_raw "Name='DestinationPort'>(?<DestinationPort>[^<]+)"
+| top DestinationPort
+```
+
+### Network Activity by Process
+
+Displays processes responsible for generating network connections observed through Sysmon Event ID 3 telemetry.
+
+**Search:**
+
+```spl
+source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
+"<EventID>3</EventID>"
+| rex field=_raw "Name='Image'>(?<Image>[^<]+)"
+| stats count by Image
+| sort - count
+```
+
+---
+
+## Findings
+
+The dashboard provides visibility into:
+
+- Network connection activity over time
+- Frequently contacted destination IP addresses
+- Commonly used network ports
+- Processes generating network traffic
+- Endpoint communication behavior
+
+The dashboard can assist analysts in identifying suspicious outbound connections, unusual network destinations, abnormal port usage, and processes responsible for network communications during threat hunting and incident response activities.
+
+---
+
+## Screenshots
+
+### Network Activity Monitoring Dashboard
+
+Network activity monitoring dashboard displaying network connections, destination IP addresses, destination ports, and process-generated network activity.
+
+![Network Activity Monitoring Dashboard](screenshots/network-activity-monitoring-dashboard.png)
+
+---
+
+## Note
+
+Several Sysmon fields were stored within raw XML event data. Custom field extractions using Splunk `rex` were implemented to extract network-related fields for dashboard visualizations and analysis.
+
+---
